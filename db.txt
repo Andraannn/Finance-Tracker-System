@@ -1,0 +1,18 @@
+# Database connection parameters
+DB_NAME = 'finance_tracker'
+DB_USER = 'postgres'
+DB_PASSWORD = '@Ndreisuki_4869'
+DB_HOST = 'localhost' # or your database host
+
+# Create the transactions table
+
+CREATE TABLE transactions (
+id SERIAL PRIMARY KEY,
+description VARCHAR(255) NOT NULL,
+amount NUMERIC(10, 2) NOT NULL,
+transaction_date DATE
+);
+
+# PESO SYMBOL
+
+₱
