@@ -110,24 +110,31 @@
           <div class="pagination">
             {% if page > 1 %}
             <a href="{{ url_for('index', page=1) }}" class="btn btn-link">
-                <i class="bi bi-chevron-double-left"></i>
+              &#171; <!-- Left double arrow -->
             </a>
             <a href="{{ url_for('index', page=page-1) }}" class="btn btn-link">
-                <i class="bi bi-chevron-left"></i>
+              &#8249; <!-- Left single arrow -->
             </a>
+            {% else %}
+            <span class="disabled-arrow">&#171;</span>
+            <span class="disabled-arrow">&#8249;</span>
             {% endif %}
-
-            <span>{{ page }}</span>
-
+          
+            <span class="page-number">{{ page }}</span>
+          
             {% if page < total_pages %}
             <a href="{{ url_for('index', page=page+1) }}" class="btn btn-link">
-                <i class="bi bi-chevron-right"></i>
+              &#8250; <!-- Right single arrow -->
             </a>
             <a href="{{ url_for('index', page=total_pages) }}" class="btn btn-link">
-                <i class="bi bi-chevron-double-right"></i>
+              &#187; <!-- Right double arrow -->
             </a>
+            {% else %}
+            <span class="disabled-arrow">&#8250;</span>
+            <span class="disabled-arrow">&#187;</span>
             {% endif %}
           </div>
+                  
 
       </div>
       <script>

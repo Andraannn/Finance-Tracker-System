@@ -114,7 +114,7 @@ tfoot td:first-child {
 
 .pagination {
   margin-top: 20px;
-  text-align: center;
+  text-align: left;
 }
 
 .pagination a {
@@ -131,6 +131,11 @@ tfoot td:first-child {
 .pagination .active {
   background-color: #4caf50;
   color: white;
+}
+
+.disabled-arrow {
+  color: #ccc; /* Change color to suit your design */
+  padding: 8px 16px;
 }
 
 
@@ -362,4 +367,8 @@ tr.header-row {
 
 .go-back-btn:hover {
   background-color: #0056b3;
+}
+
+.page-number {
+    margin: 0 5px; /* Adjust the margin as needed */
 }
