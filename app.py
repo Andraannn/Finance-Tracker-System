@@ -6,7 +6,7 @@ app = Flask(__name__)
 # Replace these with your PostgreSQL credentials
 DB_NAME = 'finance_tracker'
 DB_USER = 'postgres'
-DB_PASSWORD = '@Ndreisuki_4869'
+DB_PASSWORD = '@ptx_4869'
 DB_HOST = 'localhost' # or your database host
 DB_PORT = '5432'
 
@@ -65,11 +65,23 @@ def index(page=1):
 
 
 
-@app.route('/add', methods=['POST'])
-def add_transaction():
+@app.route('/transaction', methods=['POST'])
+def handle_transaction():
     description = request.form['description']
-    amount = request.form['amount']
+    amount = float(request.form['amount'])
+    transaction_type = request.form['transaction_type']  # Get transaction type from form data
 
+    # Determine transaction type based on the submitted form data
+    if request.path == '/add':
+        transaction_type = 'add'
+    elif request.path == '/subtract':
+        transaction_type = 'subtract'
+
+    # Adjust amount based on transaction type
+    if transaction_type == 'subtract':
+        amount = -amount
+
+    # Insert the transaction into the database
     conn = connect_to_db()
     cur = conn.cursor()
     cur.execute("INSERT INTO transactions (description, amount, date) VALUES (%s, %s, CURRENT_DATE)", (description, amount))
@@ -78,20 +90,24 @@ def add_transaction():
 
     return redirect(url_for('index'))
 
-@app.route('/subtract', methods=['POST'])
-def subtract_transaction():
-    description = request.form['description']
-    amount = request.form['amount']
+@app.route('/delete_transactions', methods=['POST'])
+def delete_transactions():
+    # Get list of transaction IDs to delete
+    transaction_ids = request.form.getlist('transaction_id')
 
-    # Convert amount to negative value for subtraction
-    amount = -float(amount)
-
+    # Connect to the database
     conn = connect_to_db()
     cur = conn.cursor()
-    cur.execute("INSERT INTO transactions (description, amount, date) VALUES (%s, %s, CURRENT_DATE)", (description, amount))
-    conn.commit()
+
+    # Loop through the list of transaction IDs and delete each transaction
+    for transaction_id in transaction_ids:
+        cur.execute("DELETE FROM transactions WHERE id = %s", (transaction_id,))
+        conn.commit()
+
+    # Close the database connection
     conn.close()
 
+    # Redirect to the index page or wherever appropriate
     return redirect(url_for('index'))
 
 
