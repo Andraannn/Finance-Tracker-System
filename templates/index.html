@@ -30,11 +30,29 @@
           </div>
   
           <h3>My Transactions</h3>
-          <form action="/search" method="post">
-            <input type="text" name="search_query" placeholder="Search by description">
-            <input type="date" name="search_date">
-            <button type="submit">Search</button>
-        </form>
+          <div class="mt-3">
+            <form action="/search" method="post" class="form-inline custom-form">
+              <div class="input-group">
+                <button type="submit" class="btn custom-btn" id="search-button"><i class="bi bi-search"></i></button>
+                <input type="text" class="form-control custom-input" name="search_query" placeholder="Search by description">
+              </div>
+              <div id="datepickerContainer" class="input-group" style="position: relative;">
+                <button type="button" class="btn custom-btn" id="datepickerToggle"><i class="bi bi-calendar"></i></button>
+              </div>
+              <input type="date" class="form-control custom-date" name="search_date" id="datepicker" style="top: 10%; left: 0; display: none;">
+            </form>
+          </div>   
+                 
+          <script>
+            document.getElementById('datepickerToggle').addEventListener('click', function() {
+            var datepickerInput = document.getElementById('datepicker');
+            if (datepickerInput.style.display === 'none') {
+              datepickerInput.style.display = 'block';
+            } else {
+              datepickerInput.style.display = 'none';
+            }
+          });
+          </script>   
           <table>
               <tr style="background-color: #a6a6a6">
                   <th>DATE</th>
@@ -136,6 +154,5 @@
             });
         });
     </script>
-     
   </body>
   </html>
