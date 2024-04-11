@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+from datetime import datetime
 import psycopg2
 
 app = Flask(__name__)
@@ -121,6 +122,31 @@ def delete_transactions():
 
     # Redirect to the index page or wherever appropriate
     return redirect(url_for('index'))
+
+from datetime import datetime
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    query = request.form.get('search_query', '')
+    date = request.form.get('search_date', '')
+
+    # Connect to the database
+    conn = connect_to_db()
+    cur = conn.cursor()
+
+    # Prepare the SQL query based on the presence of the date input
+    if date:
+        cur.execute("SELECT * FROM transactions WHERE description LIKE %s AND date = %s", ('%' + query + '%', date))
+    else:
+        cur.execute("SELECT * FROM transactions WHERE description LIKE %s", ('%' + query + '%',))
+
+    transactions = cur.fetchall()
+
+    # Close the database connection
+    conn.close()
+
+    return render_template('search_results.html', transactions=transactions, query=query, date=date)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

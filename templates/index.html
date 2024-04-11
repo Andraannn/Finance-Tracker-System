@@ -30,6 +30,11 @@
           </div>
   
           <h3>My Transactions</h3>
+          <form action="/search" method="post">
+            <input type="text" name="search_query" placeholder="Search by description">
+            <input type="date" name="search_date">
+            <button type="submit">Search</button>
+        </form>
           <table>
               <tr style="background-color: #a6a6a6">
                   <th>DATE</th>

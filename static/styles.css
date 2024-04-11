@@ -273,3 +273,51 @@ tr.header-row {
 .save-changes:hover {
   background-color: #45a049;
 }
+
+/* CSS for search bar */
+.search-form {
+  margin-bottom: 20px;
+}
+
+.search-form input[type="text"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.search-form button {
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-form button:hover {
+  background-color: #0056b3;
+}
+
+/* CSS for search results */
+.search-results {
+  margin-top: 20px;
+}
+
+.search-results table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.search-results th, .search-results td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.search-results th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.search-results tr:hover {
+  background-color: #f5f5f5;
+}

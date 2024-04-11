@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% if query and date %}
+    <h3>Search Results for "{{ query }}" on {{ date }}</h3>
+    {% elif query %}
+    <h3>Search Results for "{{ query }}"</h3>
+    {% elif date %}
+    <h3>Search Results for Date: {{ date }}</h3>
+    {% else %}
+    <h3>No search query or date provided</h3>
+    {% endif %}
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount</th>
+        </tr>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction[3] }}</td>
+            <td>{{ transaction[1] }}</td>
+            <td>{{ transaction[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
