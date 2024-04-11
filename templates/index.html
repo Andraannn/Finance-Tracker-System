@@ -5,69 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finance Tracker</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1>Finance Tracker</h1>
-        <h2>Current Balance: ₱{{ current_balance }}</h2>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+  </head>
+  <body>
+      <div class="container">
+          <h1>Finance Tracker</h1>
+          <h2>Current Balance: ₱{{ current_balance }}</h2>
+  
+          <div class="transaction-container">
+              <div class="transaction-form">
+                  <h3>Make a Transaction</h3>
+                  <form action="/transaction" method="post">
+                      <label for="transaction_type">Transaction Type:</label>
+                      <select id="transaction_type" name="transaction_type" required>
+                          <option value="add">Add</option>
+                          <option value="subtract">Deduct</option>
+                      </select><br />
+                      Description: <input type="text" name="description" required /><br />
+                      Amount: <input type="number" step="0.01" name="amount" required /><br />
+                      <input type="submit" value="Submit" />
+                  </form>
+              </div>
+          </div>
+  
+          <h3>Transactions</h3>
+          <table>
+              <tr style="background-color: #a6a6a6">
+                  <th>DATE</th>
+                  <th>DESCRIPTION</th>
+                  <th>AMOUNT</th>
+                  <th>ACTIONS</th> <!-- New column for actions -->
+              </tr>
+              {% for transaction in transactions[:5] %}
+              <!-- Limiting to the first 5 transactions -->
+              <tr class="transaction-row">
+                  <td>{{ transaction[3] }}</td>
+                  <!-- Assuming the date is at index 3 -->
+                  <td>{{ transaction[1] }}</td>
+                  <!-- Assuming the description is at index 1 -->
+                  <td>{{ transaction[2] }}</td>
+                  <!-- Assuming the amount is at index 2 -->
+                  <td>
+                      <button type="button" class="edit" data-modal-target="#editModal{{ transaction[0] }}">
+                          <i class="bi bi-pencil-fill"></i>
+                      </button>
+                      <button type="submit" name="delete_transaction" value="{{ transaction[0] }}" class="delete">
+                        <i class="bi bi-trash-fill"></i>
+                    </button>                    
+                  </td>
+              </tr>
+              <!-- Edit Modal -->
+              <div class="modal-overlay"></div>
+              <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+              <div class="modal fade" id="editModal{{ transaction[0] }}" tabindex="-1" aria-labelledby="editModal{{ transaction[0] }}Label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="btn-close" data-modal-close aria-label="Close"><i class="bi bi-x"></i></button>
+                          <h5 class="modal-title">Edit Transaction</h5>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Edit form goes here -->
+                            <form action="/edit_transaction" method="post">
+                                <input type="hidden" name="transaction_id" value="{{ transaction[0] }}">
+                                <label for="description">Description:</label>
+                                <input type="text" id="description" name="description" value="{{ transaction[1] }}" required><br>
+                                <label for="amount">Amount:</label>
+                                <input type="number" id="amount" name="amount" value="{{ transaction[2] }}" step="0.01" required><br>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              {% endfor %}
+          </table>
+  
+          <!-- Pagination -->
+          <div class="pagination">
+              {% if page > 1 %}
+              <a href="{{ url_for('index', page=1) }}">&laquo;</a>
+              <a href="{{ url_for('index', page=page-1) }}">&lsaquo;</a>
+              {% endif %}
+  
+              <span>{{ page }}</span>
+  
+              {% if page < total_pages %}
+              <a href="{{ url_for('index', page=page+1) }}">&rsaquo;</a>
+              <a href="{{ url_for('index', page=total_pages) }}">&raquo;</a>
+              {% endif %}
+          </div>
+      </div>
+      <script>
+        document.querySelectorAll('.edit').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var modalId = button.getAttribute('data-modal-target');
+                var modal = $(modalId);
+                modal.modal({ backdrop: 'static', keyboard: false }); // Added backdrop and keyboard options
+                modal.modal('show'); // Use jQuery to show the modal with the fade effect
+                $('.modal-overlay').addClass('show'); // Show the overlay
+            });
+        });
+        document.querySelectorAll('.delete').forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                var transactionId = button.value; // Get the transaction ID from the button's value attribute
+                $.ajax({
+                    type: 'POST',
+                    url: '/delete_transactions',
+                    data: { transaction_id: transactionId },
+                    success: function() {
+                        location.reload();
+                    }
+                });
+            });
+        });
 
-        <div class="transaction-container">
-            <div class="transaction-form">
-                <h3>Make a Transaction</h3>
-                <form action="/transaction" method="post">
-                    <label for="transaction_type">Transaction Type:</label>
-                    <select id="transaction_type" name="transaction_type" required>
-                        <option value="add">Add</option>
-                        <option value="subtract">Deduct</option>
-                    </select><br />
-                    Description: <input type="text" name="description" required /><br />
-                    Amount: <input type="number" step="0.01" name="amount" required /><br />
-                    <input type="submit" value="Submit" />
-                </form>
-            </div>
-        </div>
-
-        <h3>Transactions</h3>
-        <form action="/delete_transactions" method="post">
-            <table>
-                <tr style="background-color: #a6a6a6">
-                    <th>DATE</th>
-                    <th>DESCRIPTION</th>
-                    <th>AMOUNT</th>
-                    <th>DELETE</th>
-                </tr>
-                {% for transaction in transactions[:5] %}
-                <!-- Limiting to the first 5 transactions -->
-                <tr class="transaction-row">
-                  <!-- Assuming the transaction ID is at index 0 -->
-                    <td>{{ transaction[3] }}</td>
-                    <!-- Assuming the date is at index 3 -->
-                    <td>{{ transaction[1] }}</td>
-                    <!-- Assuming the description is at index 1 -->
-                    <td>{{ transaction[2] }}</td>
-                    <!-- Assuming the amount is at index 2 -->
-                    <td><input type="checkbox" name="transaction_id" value="{{ transaction[0] }}"></td>
-                </tr>
-                {% endfor %}
-            </table>
-            <br>
-            <input class="delete-button" type="submit" value="Delete Selected Transactions">
-        </form>
-
-        <!-- Pagination -->
-        <div class="pagination">
-            {% if page > 1 %}
-            <a href="{{ url_for('index', page=1) }}">&laquo;</a>
-            <a href="{{ url_for('index', page=page-1) }}">&lsaquo;</a>
-            {% endif %}
-
-            <span>{{ page }}</span>
-
-            {% if page < total_pages %}
-            <a href="{{ url_for('index', page=page+1) }}">&rsaquo;</a>
-            <a href="{{ url_for('index', page=total_pages) }}">&raquo;</a>
-            {% endif %}
-        </div>
-    </div>
-</body>
-</html>
+        document.querySelectorAll('[data-modal-close]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var modal = $(button.closest('.modal'));
+                modal.modal('hide'); // Use jQuery to hide the modal with the fade effect
+                $('.modal-overlay').removeClass('show'); // Hide the overlay
+            });
+        });
+    </script>
+     
+  </body>
+  </html>

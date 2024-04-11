@@ -62,8 +62,20 @@ def index(page=1):
     conn.close()
     return render_template('index.html', transactions=transactions, total_pages=total_pages, page=page, current_balance=current_balance)
 
+@app.route('/edit_transaction', methods=['POST'])
+def edit_transaction():
+    transaction_id = request.form['transaction_id']
+    description = request.form['description']
+    amount = float(request.form['amount'])
 
+    # Update the transaction in the database
+    conn = connect_to_db()
+    cur = conn.cursor()
+    cur.execute("UPDATE transactions SET description = %s, amount = %s WHERE id = %s", (description, amount, transaction_id))
+    conn.commit()
+    conn.close()
 
+    return redirect(url_for('index'))
 
 @app.route('/transaction', methods=['POST'])
 def handle_transaction():
@@ -109,7 +121,6 @@ def delete_transactions():
 
     # Redirect to the index page or wherever appropriate
     return redirect(url_for('index'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
