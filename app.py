@@ -130,6 +130,10 @@ def search():
     query = request.form.get('search_query', '')
     date = request.form.get('search_date', '')
 
+    # Check if both query and date are empty
+    if not query and not date:
+        return render_template('search_results.html', message='No search query or date provided')
+
     # Connect to the database
     conn = connect_to_db()
     cur = conn.cursor()

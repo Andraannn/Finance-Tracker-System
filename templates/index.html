@@ -106,21 +106,29 @@
               </div>
               {% endfor %}
           </table>
-  
           <!-- Pagination -->
           <div class="pagination">
-              {% if page > 1 %}
-              <a href="{{ url_for('index', page=1) }}">&laquo;</a>
-              <a href="{{ url_for('index', page=page-1) }}">&lsaquo;</a>
-              {% endif %}
-  
-              <span>{{ page }}</span>
-  
-              {% if page < total_pages %}
-              <a href="{{ url_for('index', page=page+1) }}">&rsaquo;</a>
-              <a href="{{ url_for('index', page=total_pages) }}">&raquo;</a>
-              {% endif %}
+            {% if page > 1 %}
+            <a href="{{ url_for('index', page=1) }}" class="btn btn-link">
+                <i class="bi bi-chevron-double-left"></i>
+            </a>
+            <a href="{{ url_for('index', page=page-1) }}" class="btn btn-link">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+            {% endif %}
+
+            <span>{{ page }}</span>
+
+            {% if page < total_pages %}
+            <a href="{{ url_for('index', page=page+1) }}" class="btn btn-link">
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a href="{{ url_for('index', page=total_pages) }}" class="btn btn-link">
+                <i class="bi bi-chevron-double-right"></i>
+            </a>
+            {% endif %}
           </div>
+
       </div>
       <script>
         document.querySelectorAll('.edit').forEach(function(button) {
