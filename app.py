@@ -7,7 +7,7 @@ app = Flask(__name__)
 # Replace these with your PostgreSQL credentials
 DB_NAME = 'finance_tracker'
 DB_USER = 'postgres'
-DB_PASSWORD = '@ptx_4869'
+DB_PASSWORD = ''
 DB_HOST = 'localhost' # or your database host
 DB_PORT = '5432'
 
